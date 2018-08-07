@@ -217,12 +217,15 @@ in {
       }
     );
 
-    #boot.kernel.sysctl.net.ipv4 = activeNetworkAttributes (network: _:
-    #  nameValuePair "conf.tinc/${network}.forwarding" true
-    #);
-    #boot.kernel.sysctl.net.ipv6 = activeNetworkAttributes (network: _:
-    #  nameValuePair "conf.tinc/${network}.forwarding" true
-    #);
+    boot.kernel.sysctl = let
+      ipv4 = activeNetworkAttributes (network: _:
+        nameValuePair "net.ipv4.conf.tinc/${network}.forwarding" true
+      );
+      ipv6 = activeNetworkAttributes (network: _:
+        nameValuePair "net.ipv6.conf.tinc/${network}.forwarding" true
+      );
+    in
+      ipv4 // ipv6;
 
     # create the services
     # -------------------
